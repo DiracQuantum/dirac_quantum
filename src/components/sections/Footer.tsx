@@ -29,7 +29,7 @@ const cols: [string, [string, string][]][] = [
     [
       ["Token", "/#token"],
       ["Docs", ""],
-      ["GitHub", ""],
+      ["GitHub", "https://github.com/DiracQuantum/dirac_quantum"],
       ["X", ""],
     ],
   ],
@@ -82,6 +82,10 @@ export default function Footer() {
                       <span className="text-sm text-mute">
                         {label} <span className="font-mono text-[10px] uppercase tracking-[0.14em]">· soon</span>
                       </span>
+                    ) : href.startsWith("https://") ? (
+                      <a href={href} target="_blank" rel="noopener noreferrer" className={linkCls}>
+                        {label}
+                      </a>
                     ) : href.startsWith("/#") && home ? (
                       <a href={href} className={linkCls}>
                         {label}
