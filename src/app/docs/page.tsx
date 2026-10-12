@@ -151,21 +151,21 @@ export default function DocsPage() {
           </aside>
 
           <div className="min-w-0 space-y-5">
-            <section id="start" aria-labelledby="start-title" className="paper scroll-mt-28 p-6 md:p-9">
-              <span className="eyebrow !text-ink/55">01 / Start here</span>
+            <section id="start" aria-labelledby="start-title" className="panel scroll-mt-28 p-6 md:p-9">
+              <span className="eyebrow">01 / Start here</span>
               <h2 id="start-title" className="mt-3 text-2xl font-semibold tracking-tight md:text-3xl">Your first steps.</h2>
-              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-ink/70 md:text-base">Start by reading your wallet, then create an identity for documents and private conversations.</p>
+              <p className="mt-4 max-w-2xl text-sm leading-relaxed text-mute md:text-base">Start by reading your wallet, then create an identity for documents and private conversations.</p>
               <ol className="mt-7 grid gap-5 sm:grid-cols-3">
                 {[
                   ["Read", "Scan a public address. No wallet connection is needed.", "/scan", "Open scanner"],
                   ["Create", "Connect a wallet and choose how to create and recover your passport.", "/passport", "Create passport"],
                   ["Use", "Seal a document or write an encrypted letter to another passport.", "/write", "Write a letter"],
                 ].map(([title, text, href, label], index) => (
-                  <li key={title} className="border-t border-line-ink pt-4">
-                    <span className="font-mono text-[10px] text-ink/55">0{index + 1}</span>
+                  <li key={title} className="border-t border-line pt-4">
+                    <span className="font-mono text-[10px] text-mute">0{index + 1}</span>
                     <h3 className="mt-2 text-lg font-semibold">{title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-ink/70">{text}</p>
-                    <Link href={href} className="mt-4 inline-block text-xs font-semibold underline decoration-ink/30 underline-offset-4 hover:decoration-ink">{label} ↗</Link>
+                    <p className="mt-2 text-sm leading-relaxed text-mute">{text}</p>
+                    <Link href={href} className="mt-4 inline-block text-xs font-semibold text-paper underline decoration-paper/30 underline-offset-4 hover:decoration-paper">{label} ↗</Link>
                   </li>
                 ))}
               </ol>
