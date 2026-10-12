@@ -2,210 +2,105 @@
 
 <div align="center">
 
-### Post-quantum identity for Solana.
+### Your identity. Your proof. Your private conversations.
 
-One wallet. A verifiable passport. Signed documents. Encrypted conversations.
+**Post-quantum identity for people who use Solana.**
 
-[**Explore Dirac**](https://dirac.digital) · [**Source code**](https://github.com/DiracQuantum/dirac_quantum) · [**Architecture**](#how-it-is-built) · [**Run locally**](#run-locally)
+[**Explore Dirac**](https://dirac.digital) · [**Our mission**](#our-mission) · [**What you can do**](#what-you-can-do) · [**Quantum playground**](#learn-by-playing)
 
-![Next.js](https://img.shields.io/badge/Next.js-16-111111?style=flat-square&logo=nextdotjs&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-strict-111111?style=flat-square&logo=typescript&logoColor=3178C6)
-![Solana](https://img.shields.io/badge/Solana-Wallet_Standard-111111?style=flat-square&logo=solana&logoColor=9945FF)
-![Cloudflare](https://img.shields.io/badge/Cloudflare-Workers_%2B_D1-111111?style=flat-square&logo=cloudflare&logoColor=F38020)
+![Solana](https://img.shields.io/badge/Built_for-Solana-111111?style=flat-square&logo=solana&logoColor=9945FF)
+![Identity](https://img.shields.io/badge/Identity-ML--DSA--65-111111?style=flat-square&labelColor=111111&color=1769AA)
+![Encryption](https://img.shields.io/badge/Encryption-ML--KEM--768-111111?style=flat-square&labelColor=111111&color=1769AA)
 
 </div>
 
 ---
 
-## What is Dirac?
+## Our mission
 
-Dirac connects a Solana wallet to a post-quantum identity that can sign documents and receive encrypted messages. Keys are generated in the browser, the passport is bound to the wallet, and its hash can be anchored on Solana for an independently verifiable record.
+A wallet address tells people where to send a transaction. Everyday relationships need more: a way to establish an identity, prove who signed a document, and communicate privately.
 
-The experience starts with a scanner: see what a wallet controls, inspect its post-quantum identity, and understand which data sources were actually checked. From there, create a passport, seal a file, or write to another wallet. A shared quantum pet, a two-qubit arena, and an interactive attack lab make the underlying ideas tangible.
+**Dirac brings those capabilities together in a passport connected to your Solana wallet.** We are building practical tools that help people establish trust and use post-quantum cryptography today, with an experience they can understand and use.
 
-**Dirac adds an application identity layer. It does not change Solana's transaction signatures or make wallet balances quantum-safe.**
+Our goal is to make stronger identity and private communication accessible to wallet holders, independent creators, trading counterparties, and teams working together on-chain.
 
-## Explore the product
+## What you can do
 
-| Experience | What you can do | Route |
-| --- | --- | --- |
-| **Quantum Scanner** | Inspect SOL, tokens, stake, authorities, and Squads multisig memberships. Read three separate indicators: quantum exposure, passport level, and data confidence. | [`/scan`](https://dirac.digital/scan) |
-| **Quantum Passport** | Create ML-KEM-768 and ML-DSA-65 keys, bind them to a wallet, anchor the passport hash on-chain, and publish a verifiable identity page. | [`/passport`](https://dirac.digital/passport) · `/p?a=<wallet>` |
-| **Document Seal** | Sign a file's SHA-256 hash, download a `.qseal`, and verify the signature in the browser. The original document stays on your device. | [`/seal`](https://dirac.digital/seal) |
-| **Encrypted Inbox** | Send browser-encrypted letters to another passport, sign requests with your wallet, and invite wallets that have not joined yet. | [`/inbox`](https://dirac.digital/inbox) · [`/write`](https://dirac.digital/write) |
-| **Quantum Pet** | Apply gates to a shared 10-qubit register. See the probabilities change and the daily measurement select the pet's form. | [`/pet`](https://dirac.digital/pet) |
-| **Qubit Arena** | Build circuits, commit and reveal fighters, and compete using exact two-qubit probabilities and an ELO ladder. | [`/arena`](https://dirac.digital/arena) |
-| **Attack Lab** | Explore toy brute force, Shor's algorithm, lattice problems, and harvest-now-decrypt-later scenarios. | [`/lab`](https://dirac.digital/lab) |
+### Understand what your wallet controls
 
-Public passports also have embeddable SVG badges. Solana Actions provide wallet-to-wallet invite transactions through `/invite/<wallet>` and `/api/actions/invite/<wallet>`. Blink unfurling on external platforms depends on domain registration with Dialect.
+The **Quantum Scanner** reads your wallet's assets, authorities, and detected multisig memberships. It brings three questions into one report: what depends on this wallet key, whether a post-quantum passport exists, and how complete the available data is.
 
-## How it is built
+Missing data is marked as unavailable. The report helps you understand your exposure and identity status without hiding uncertainty behind a single score.
 
-```mermaid
-flowchart TD
-    Visitor[Visitor + Solana wallet] --> UI[Next.js static site]
-    UI --> Crypto[Browser cryptography]
-    UI --> Worker[Cloudflare Worker]
-    Crypto --> Keys[Passport keys in memory]
-    Crypto --> Envelopes[Signatures + encrypted envelopes]
-    Envelopes --> Worker
-    Worker --> Assets[Static assets + HTML metadata]
-    Worker --> DB[(Cloudflare D1)]
-    Worker --> RPC[Solana RPC / Helius]
-    Visitor --> Chain[Solana memo anchors + transfers]
-    RPC --> Chain
-    Cron[15-minute scheduled tick] --> Worker
-    Worker --> Simulator[Quantum pet simulator]
-    Worker -. configured weekly run .-> IBM[IBM Quantum hardware]
-```
+[**Scan a wallet →**](https://dirac.digital/scan)
 
-### The interface
+### Create an identity people can verify
 
-**Next.js 16 App Router, React 19, TypeScript, and Tailwind CSS 4.** The app is exported as static files; the production server is the Cloudflare Worker, rather than a running Next.js server. Interactive pages read live data through `/api/*` on the same origin.
+A **Quantum Passport** connects your wallet to keys for post-quantum signatures and encrypted messages. Its public page lets others inspect your identity, and its hash can be anchored on Solana as a record of that passport version.
 
-The visual layer uses **Three.js, React Three Fiber, and Drei** for particles and creature models, **Framer Motion** for interface transitions, and **Lenis** for scrolling. Archivo, Newsreader, and IBM Plex Mono set the typography. Wallet connections use **Wallet Standard**.
+Choose **Simple** for recovery through a wallet signature, or **Hardened** for independent keys recovered with a 24-word phrase or encrypted recovery file. Hardened separates your passport's key material from the wallet's Ed25519 secret; Simple derives its keys from the wallet signature.
 
-### The API and storage
+Share your passport link or embed its badge so collaborators and counterparties can check the identity they are interacting with.
 
-One **Cloudflare Worker** serves the static export and the API. It verifies signatures and on-chain anchors, proxies Solana RPC, reads scanner data, handles passport history and rotations, and stores encrypted inbox envelopes. **D1** holds the persistent registry, message records, playground state, and shared rate-limit counters.
+[**Create your passport →**](https://dirac.digital/passport)
 
-The Worker also prepares public badges and share metadata, rewrites HTML and its inline Next.js payload for wallet-specific previews, and applies security headers. The deployment script computes Content Security Policy hashes from the exported HTML.
+### Give your documents verifiable proof
 
-### The quantum playground
+A **Document Seal** lets you sign a file and share proof of that signature. A recipient can check which passport signed it and whether the file still matches the signed hash.
 
-The pet's shared **10-qubit register is simulated exactly**. Visitors apply gates throughout the day; a measurement at **00:00 UTC** determines the next form. The scheduled Worker runs every 15 minutes to process daily collapses, poll hardware jobs, and resolve finished arena tournaments.
+The file is processed on your device. Dirac creates a portable `.qseal` proof, so you can verify a proposal, agreement, statement, or creative work without uploading the original document to our server.
 
-When IBM credentials and allowance are available, the **Sunday collapse** can run on IBM Quantum hardware. The implementation rebuilds the gate log, maps it to supported connected qubits, emits OpenQASM 3, submits a Sampler job, and compares the hardware distribution with the simulator. Unconfigured, over-budget, or unsuccessful hardware runs fall back to simulation.
+[**Seal or verify a document →**](https://dirac.digital/seal)
 
-The arena shares the same pure two-qubit physics module between the browser, Worker, and self-tests. Ranked results use exact probabilities; sparring uses sampled shots.
+### Have private conversations between wallets
 
-## Cryptography and identity
+The **Encrypted Inbox** lets you write to another passport directly from your wallet identity. Your browser encrypts the message before it is uploaded; the recipient decrypts it using their passport keys.
 
-| Purpose | Primitive | Where it happens |
-| --- | --- | --- |
-| Establish a message encryption secret | **ML-KEM-768** | Sender and recipient browsers |
-| Sign passports and document hashes | **ML-DSA-65** | Browser; public verification in the browser and Worker |
-| Encrypt message contents and recovery files | **XChaCha20-Poly1305** | Browser |
-| Derive key material | **HKDF-SHA256** | Browser |
-| Protect password-encrypted recovery files | **Argon2id** | Browser |
-| Bind a passport to a Solana wallet | **Ed25519 wallet signature** | Wallet signs; Worker verifies |
-| Identify a passport or document | **SHA-256** | Browser and Worker |
+This gives collaborators and counterparties a place to exchange proposals, coordinate work, and send private notes. The service stores encrypted envelopes and routing metadata, while message contents remain encrypted.
 
-The implementation uses the `@noble` and `@scure` libraries. Public passport data can be stored in browser storage; secret passport keys are kept in memory and restored after a reload. Inbox encryption happens before upload: the server stores ciphertext and routing metadata, not the message plaintext.
+[**Open your inbox →**](https://dirac.digital/inbox) · [**Write a message →**](https://dirac.digital/write)
 
-### Two passport modes
+## Who Dirac helps
 
-| | Simple | Hardened |
-| --- | --- | --- |
-| Key source | Deterministic wallet signature | Independent random entropy |
-| Recovery | Sign the same wallet message again | 24-word phrase or encrypted recovery file |
-| Relationship to the wallet key | Recovering the Ed25519 secret also allows the same passport keys to be derived | Passport keys are independent of the Ed25519 secret |
-| Best suited for | Convenient onboarding | Independent post-quantum key custody |
-
-Passports are self-signed with ML-DSA-65 and wallet-signed with Ed25519. A Solana memo can anchor the passport hash, and the Worker checks that transaction before reporting it as verified. Replacing an existing passport requires a rotation signature from its current ML-DSA key; a wallet signature alone is insufficient.
-
-See [`src/lib/pq.ts`](src/lib/pq.ts) for the primitives and [`src/lib/inbox.ts`](src/lib/inbox.ts) for the envelope format.
-
-## Run locally
-
-Use **Node.js 24+** for the TypeScript self-test scripts, and npm.
-
-```powershell
-git clone https://github.com/DiracQuantum/dirac_quantum.git
-cd dirac_quantum
-npm ci
-Copy-Item .env.example .env.development.local
-npm run dev
-```
-
-Open `http://localhost:3000`. The example development environment points the browser API client at the deployed Worker. Next.js development serves the frontend; the Worker owns `/api/*`.
-
-For a fully local API, start the Worker in another terminal:
-
-```powershell
-npx wrangler d1 migrations apply dirac --local
-npx wrangler dev --local
-```
-
-Set `NEXT_PUBLIC_API_BASE=http://localhost:8787` in `.env.development.local`, then restart the frontend. Configure `RPC_URL` in a local `.dev.vars` file when a private RPC is needed. Helius is used for the scanner's DAS and account-index queries; unavailable sources remain explicitly marked in the report.
-
-### Validate changes
-
-```powershell
-npm run lint
-npx tsc --noEmit
-npx tsc -p worker
-node scripts/pq-selftest.ts
-node scripts/inbox-selftest.ts
-node scripts/pet-selftest.ts
-node scripts/arena-selftest.ts
-node scripts/qpu-selftest.ts
-node scripts/actions-selftest.ts
-node scripts/badge-selftest.ts
-npm run build
-```
-
-Additional self-tests and end-to-end utilities live in [`scripts/`](scripts/). End-to-end scripts may require a running Worker or a configured service; pure self-tests run without production credentials.
-
-## Deploy
-
-The configured production domain is **[dirac.digital](https://dirac.digital)**. The original Worker address is **[dirac.deeper-cf.workers.dev](https://dirac.deeper-cf.workers.dev)**. DNS activation and domain attachment are described in [`docs/DOMAIN.md`](docs/DOMAIN.md).
-
-Authenticate Wrangler to the intended Cloudflare account. When deploying your own instance, create a D1 database and replace the existing database binding in `wrangler.jsonc` with yours.
-
-```powershell
-# Apply new migrations when the database schema changes.
-npx wrangler d1 migrations apply dirac --remote
-
-# Build, generate CSP hashes, and publish the Worker + static assets.
-npm run deploy
-```
-
-Production uses same-origin API requests: keep `NEXT_PUBLIC_API_BASE` unset or empty in production builds. `SITE_URL` sets the Worker's public origin; `NEXT_PUBLIC_SITE_URL` can override frontend share and metadata URLs at build time.
-
-| Configuration | Purpose |
+| For | How Dirac helps |
 | --- | --- |
-| `DB` | Cloudflare D1 binding defined in `wrangler.jsonc` |
-| `RPC_URL` | Optional private Solana RPC; a Helius endpoint supports the scanner's indexed sources |
-| `IBM_QUANTUM_API_KEY` | Optional IBM hardware integration |
-| `IBM_QUANTUM_CRN` | Optional explicit IBM Quantum instance |
-| `X_API_KEY`, `X_API_SECRET`, `X_ACCESS_TOKEN`, `X_ACCESS_SECRET` | Optional daily pet posts on X |
+| **Wallet holders** | Understand wallet exposure, create a passport, and share a verifiable identity. |
+| **DAO and protocol teams** | Sign documents and exchange encrypted proposals or private coordination messages. |
+| **Trading counterparties** | Connect a public passport to a wallet address and discuss terms through an encrypted inbox. |
+| **Creators and contributors** | Give files and public statements verifiable signatures tied to their passport. |
+| **People exploring quantum computing** | Learn through interactive experiments and see how the concepts connect to identity and encryption. |
 
-Set production secrets with `npx wrangler secret put <NAME>`. Local environment files, secrets, dependencies, build output, and original source models are excluded from Git.
+## Learn by playing
 
-## Repository map
+Quantum computing is easier to understand when you can interact with it. Dirac's playground turns abstract ideas into experiments you can watch and influence.
 
-```text
-src/
-  app/                 Product pages and route metadata
-  components/          Interface, wallet, scanner, pet, arena, and 3D components
-  lib/                 Shared cryptography, protocol formats, and simulation logic
-worker/                API router, storage, verification, RPC, and scheduled jobs
-migrations/            D1 database schema
-scripts/               Self-tests, end-to-end checks, and CSP build tooling
-public/
-  characters/          Creature artwork
-  models/              Web-ready GLB models
-docs/                  Module contracts, domain setup, and README artwork
-SPEC.md                Product specification and original design intent
-wrangler.jsonc         Worker, assets, D1, domain, limits, and scheduling configuration
-```
+| Experience | Explore |
+| --- | --- |
+| **[Quantum Pet](https://dirac.digital/pet)** | A shared 10-qubit simulation shaped by visitors. Apply gates, watch the probabilities change, and see the daily measurement choose the pet's next form. |
+| **[Qubit Arena](https://dirac.digital/arena)** | Build two-qubit fighters, explore entanglement, and compete through circuit choices and exact probabilities. |
+| **[Attack Lab](https://dirac.digital/lab)** | Explore toy demonstrations of brute force, Shor's algorithm, lattice problems, and harvest-now-decrypt-later scenarios. |
 
-## Read further
+The pet also supports a weekly run on **IBM Quantum hardware** when credentials and allowance are available. Hardware results can be compared with the simulation; simulation remains the fallback when a hardware run is unavailable.
 
-- [Passport, seal, and shared API contracts](docs/CONTRACT.md)
-- [Scanner data model and confidence](docs/CONTRACT-SCANNER-V2.md)
-- [Inbox, quantum pet, and IBM integration](docs/CONTRACT-WEEK2.md)
-- [Arena protocol](docs/CONTRACT-ARENA.md)
-- [Public passport badges](docs/CONTRACT-BADGE.md)
-- [Solana Actions and Blink invites](docs/CONTRACT-ACTIONS.md)
-- [Domain configuration](docs/DOMAIN.md)
+## Built around ownership and verification
 
-Some specification documents describe earlier plans; the code and current module contracts define the implemented behavior. The token has not launched, and no contract address is published.
+**Keys are created in your browser.** Secret passport keys stay in memory, and you restore them through the recovery method you chose.
+
+**Identity has a public proof.** Passports combine a wallet signature with a post-quantum self-signature. An on-chain anchor records the passport hash; replacing a registered passport requires a signature from its existing post-quantum key.
+
+**Privacy starts before upload.** Messages are encrypted on your device. Documents are hashed and signed locally, so the original file can stay with you.
+
+**The implementation is open.** Dirac uses ML-DSA-65 for signatures and ML-KEM-768 to establish encryption secrets, implemented with the `@noble` and `@scure` libraries. Solana provides the wallet connection and on-chain anchors, while the web application makes these capabilities accessible through one interface.
+
+Dirac protects an application identity, document proofs, and encrypted conversations. Solana wallet transactions continue to use the network's existing signatures; creating a passport does not change the security of your wallet balances.
 
 ---
 
 <div align="center">
+
+### Start with your wallet. Build an identity beyond it.
+
+[**Explore Dirac at dirac.digital →**](https://dirac.digital)
 
 **DIRAC** · Identity that survives Q-Day.
 
