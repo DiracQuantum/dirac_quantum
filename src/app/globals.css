@@ -1,0 +1,312 @@
+@import "tailwindcss";
+
+/* Dirac design tokens.
+   Layout: black editorial page, numbered pinned chapters, one paper-coloured document (the passport).
+   Colour: ink and warm paper only; the single accent lives in the 3D physics and live indicators. */
+@theme {
+  --color-ink: #070708;
+  --color-ink-2: #0f0f12;
+  --color-ink-3: #17171b;
+  --color-paper: #f2f1ec;
+  --color-paper-2: #e4e2da;
+  --color-mute: #8c8c87;
+  --color-line: rgba(242, 241, 236, 0.12);
+  --color-line-ink: rgba(7, 7, 8, 0.14);
+  --color-signal: #4d8bff;
+  --font-sans: var(--font-archivo), "Helvetica Neue", Arial, sans-serif;
+  --font-mono: var(--font-plex-mono), ui-monospace, "SF Mono", Menlo, monospace;
+  --font-serif: var(--font-newsreader), Georgia, "Times New Roman", serif;
+  --ease-out-expo: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+html {
+  color-scheme: dark;
+}
+
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+.lenis.lenis-smooth {
+  scroll-behavior: auto !important;
+}
+.lenis.lenis-smooth [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+.lenis.lenis-stopped {
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-ink);
+  color: var(--color-paper);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  overflow-x: clip;
+}
+
+::selection {
+  background: var(--color-paper);
+  color: var(--color-ink);
+}
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(242, 241, 236, 0.18) transparent;
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-signal);
+  outline-offset: 3px;
+}
+
+/* App pages centre <main> with mx-auto and a max width. In the flex-column body the
+   auto margins would shrink it to its content, so it claims the full row first. */
+@layer base {
+  main {
+    width: 100%;
+  }
+  /* Tailwind 4 gives buttons the default arrow; clickable controls show the hand again */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+}
+
+/* Component classes live in the components layer, so a Tailwind utility on the
+   same element (text-paper on an eyebrow, hover:border-paper/50 on a chip,
+   text-signal on an active chip) wins over the class default, as written. */
+@layer components {
+  /* Type roles */
+  .display {
+    font-family: var(--font-sans);
+    font-weight: 800;
+    font-stretch: 88%;
+    text-transform: uppercase;
+    letter-spacing: -0.035em;
+    line-height: 0.9;
+    text-wrap: balance;
+  }
+  .display-serif {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    font-style: italic;
+    text-transform: none;
+    letter-spacing: -0.01em;
+    font-stretch: 100%;
+  }
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--color-mute);
+  }
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* Surfaces */
+  .panel {
+    background: var(--color-ink-2);
+    border: 1px solid var(--color-line);
+    border-radius: 18px;
+  }
+  .paper {
+    background: var(--color-paper);
+    color: #111113;
+    border-radius: 18px;
+    box-shadow:
+      0 1px 0 rgba(255, 255, 255, 0.5) inset,
+      0 40px 80px -40px rgba(0, 0, 0, 0.9);
+  }
+
+  /* Controls. The solid pill carries a transparent 1px border so it is exactly
+     as tall as a ghost pill beside it. Disabled pills neither lift nor brighten. */
+  .pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    border: 1px solid transparent;
+    border-radius: 9999px;
+    padding: 0.85rem 1.3rem;
+    background: var(--color-paper);
+    color: var(--color-ink);
+    font-weight: 700;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition:
+      transform 0.55s var(--ease-out-expo),
+      background-color 0.3s ease,
+      border-color 0.3s ease,
+      color 0.3s ease,
+      opacity 0.3s ease;
+  }
+  .pill:not(:disabled, [aria-disabled="true"]):hover {
+    transform: translateY(-2px);
+    background: #ffffff;
+  }
+  .pill:disabled,
+  .pill[aria-disabled="true"] {
+    cursor: not-allowed;
+    opacity: 0.5;
+  }
+  /* busy (connecting, signing) is not unavailable: keep it bright, its own indicator shows progress */
+  .pill:disabled[aria-busy="true"] {
+    cursor: progress;
+    opacity: 1;
+  }
+  .pill-ghost {
+    background: transparent;
+    color: var(--color-paper);
+    border: 1px solid var(--color-line);
+  }
+  .pill-ghost:not(:disabled, [aria-disabled="true"]):hover {
+    background: rgba(242, 241, 236, 0.08);
+  }
+  .chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border: 1px solid var(--color-line);
+    border-radius: 9999px;
+    padding: 0.4rem 0.75rem;
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.04em;
+    color: var(--color-paper);
+  }
+}
+
+/* Stamp: a rubber-stamp impression used for "anchored" and "sealed". Kept outside the
+   components layer on purpose: its size is fixed, so a stray text-* utility cannot blow it up. */
+.stamp {
+  display: inline-block;
+  border: 2px solid currentColor;
+  border-radius: 6px;
+  padding: 0.35rem 0.7rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 12px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  transform: rotate(-6deg);
+  opacity: 0.92;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  opacity: 0.05;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='320' height='320'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/></filter><rect width='320' height='320' filter='url(%23n)'/></svg>");
+}
+
+@keyframes shimmer {
+  from {
+    transform: translateX(-100%);
+  }
+  to {
+    transform: translateX(220%);
+  }
+}
+.shimmer {
+  position: relative;
+  overflow: hidden;
+}
+.shimmer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  width: 45%;
+  background: linear-gradient(
+    90deg,
+    transparent,
+    rgba(242, 241, 236, 0.14),
+    transparent
+  );
+  animation: shimmer 2.4s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .shimmer::after {
+    animation: none;
+  }
+}
+
+/* Page-load burst: black until the scene is ready, then a point of light
+   gathers, detonates and fades while the particles settle behind it. */
+.intro-flash {
+  position: fixed;
+  inset: 0;
+  z-index: 60;
+  pointer-events: none;
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+  background: #070708;
+}
+.intro-flash--live {
+  animation: intro-fade 2.7s ease-out forwards;
+}
+.intro-flash__core {
+  width: 8px;
+  height: 8px;
+  border-radius: 9999px;
+  background: #fff;
+  box-shadow:
+    0 0 24px 10px rgba(223, 232, 255, 0.95),
+    0 0 120px 50px rgba(77, 139, 255, 0.6);
+  opacity: 0;
+}
+.intro-flash--live .intro-flash__core {
+  animation: intro-core 2.1s cubic-bezier(0.2, 0.9, 0.2, 1) forwards;
+}
+.intro-flash__ring {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  border: 2px solid rgba(235, 242, 255, 0.95);
+  box-shadow: 0 0 40px 6px rgba(120, 170, 255, 0.5);
+  opacity: 0;
+}
+.intro-flash--live .intro-flash__ring {
+  animation: intro-ring 2.1s cubic-bezier(0.05, 0.85, 0.2, 1) forwards;
+}
+.intro-flash__ring--2 {
+  border-width: 1px;
+  box-shadow: none;
+}
+.intro-flash--live .intro-flash__ring--2 {
+  animation-delay: 0.16s;
+}
+@keyframes intro-core {
+  0% { transform: scale(0.1); opacity: 0; }
+  28% { transform: scale(1); opacity: 0.9; }
+  33% { transform: scale(2.2); opacity: 1; }
+  38% { transform: scale(60); opacity: 1; }
+  44% { transform: scale(75); opacity: 0.9; }
+  58% { transform: scale(100); opacity: 0; }
+  100% { transform: scale(130); opacity: 0; }
+}
+@keyframes intro-ring {
+  0%, 32% { width: 14px; height: 14px; opacity: 0; }
+  34% { width: 36px; height: 36px; opacity: 1; }
+  100% { width: 3200px; height: 3200px; opacity: 0; }
+}
+@keyframes intro-fade {
+  0% { background: rgba(7, 7, 8, 1); }
+  12% { background: rgba(7, 7, 8, 0); }
+  100% { background: rgba(7, 7, 8, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .intro-flash:not(.intro-flash--forced) { display: none; }
+}

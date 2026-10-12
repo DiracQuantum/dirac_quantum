@@ -1,0 +1,37 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "dirac",
+  "workers_dev": true,
+  "routes": [
+    { "pattern": "dirac.digital", "custom_domain": true }
+  ],
+  "vars": { "SITE_URL": "https://dirac.digital" },
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-06",
+  "compatibility_flags": ["nodejs_compat"],
+  "assets": {
+    "directory": "./out",
+    "binding": "ASSETS",
+    "not_found_handling": "404-page",
+    "html_handling": "auto-trailing-slash",
+    // Every request passes through the Worker: https redirect, security
+    // headers and the prefetch-path rewrite happen there before ASSETS.
+    "run_worker_first": true
+  },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "dirac",
+      "database_id": "bfda3843-d464-4022-b765-25f70316dd03"
+    }
+  ],
+  // Per client IP (cf-connecting-ip): 12 scans and 120 proxied RPC calls per minute.
+  "ratelimits": [
+    { "name": "SCAN_LIMITER", "namespace_id": "1001", "simple": { "limit": 12, "period": 60 } },
+    { "name": "RPC_LIMITER", "namespace_id": "1002", "simple": { "limit": 120, "period": 60 } }
+  ],
+  // Every 15 min (`scheduled` in worker/index.ts): the pet collapses its day on the 00:00 UTC tick,
+  // the weekly IBM Quantum run is polled, finished arena tournaments are resolved.
+  "triggers": { "crons": ["*/15 * * * *"] },
+  "observability": { "enabled": true }
+}

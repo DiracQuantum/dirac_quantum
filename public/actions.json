@@ -1,0 +1,6 @@
+{
+  "rules": [
+    { "pathPattern": "/invite/*", "apiPath": "/api/actions/invite/*" },
+    { "pathPattern": "/api/actions/**", "apiPath": "/api/actions/**" }
+  ]
+}

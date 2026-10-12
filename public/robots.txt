@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+# Browser-drawn share cards (worker/share.ts) are the og:image of /scan, /p and /pet;
+# card crawlers honour robots.txt, so the PNGs stay fetchable while the rest of /api/ is closed.
+Allow: /api/share/
+Allow: /api/badge/
+Disallow: /api/
+Sitemap: https://dirac.deeper-cf.workers.dev/sitemap.xml
