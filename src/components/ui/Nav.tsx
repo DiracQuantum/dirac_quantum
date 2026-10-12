@@ -31,6 +31,7 @@ const menuLinks: [string, string, string][] = [
   ["Quantum pet", "/pet", "one creature, everyone's gates"],
   ["Qubit arena", "/arena", "a fighter built from a circuit"],
   ["Attack lab", "/lab", "break it yourself"],
+  ["Docs", "/docs", "a guide to your identity"],
   ["Token", "/#token", "$DIRAC, bought back in public"],
 ];
 

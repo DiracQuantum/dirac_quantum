@@ -104,6 +104,6 @@ Dirac protects an application identity, document proofs, and encrypted conversat
 
 **DIRAC** · Identity that survives Q-Day.
 
-[Website](https://dirac.digital) · [GitHub](https://github.com/DiracQuantum/dirac_quantum)
+[Website](https://dirac.digital) · [Docs](https://dirac.digital/docs) · [X](https://x.com/dirac_quantum) · [GitHub](https://github.com/DiracQuantum/dirac_quantum)
 
 </div>

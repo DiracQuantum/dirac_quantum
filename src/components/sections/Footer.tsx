@@ -28,9 +28,9 @@ const cols: [string, [string, string][]][] = [
     "Company",
     [
       ["Token", "/#token"],
-      ["Docs", ""],
+      ["Docs", "/docs"],
       ["GitHub", "https://github.com/DiracQuantum/dirac_quantum"],
-      ["X", ""],
+      ["X", "https://x.com/dirac_quantum"],
     ],
   ],
 ];
